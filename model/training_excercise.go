@@ -14,9 +14,12 @@ type TrainingCategory string
 type TrainingDifficulty string
 
 const (
-	Beginner     = TrainingDifficulty("beginner")
-	Intermediate = TrainingDifficulty("intermediate")
-	Advanced     = TrainingDifficulty("advanced")
+	Chest      = TargetMuscle("chest")
+	Abdominals = TargetMuscle("abdominals")
+	Quads      = TargetMuscle("quads")
+	Biceps     = TargetMuscle("biceps")
+	Shoulders  = TargetMuscle("shoulders")
+	Lats       = TargetMuscle("lats")
 )
 
 const (
@@ -27,10 +30,7 @@ const (
 )
 
 const (
-	Chest      = TargetMuscle("chest")
-	Abdominals = TargetMuscle("abdominals")
-	Quads      = TargetMuscle("quads")
-	Biceps     = TargetMuscle("biceps")
-	Shoulders  = TargetMuscle("shoulders")
-	Lats       = TargetMuscle("lats")
+	Beginner     = TrainingDifficulty("beginner")
+	Intermediate = TrainingDifficulty("intermediate")
+	Advanced     = TrainingDifficulty("advanced")
 )
