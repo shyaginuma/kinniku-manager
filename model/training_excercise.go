@@ -1,6 +1,6 @@
 package model
 
-type TrainingMenu struct {
+type TrainingExcercise struct {
 	ID          string
 	Name        string
 	Description string
