@@ -1,5 +1,22 @@
 package model
 
+type TrainingMenu struct {
+	ID          string
+	Name        string
+	Description string
+	Menu        []TrainingSet
+}
+
+type TrainingSet struct {
+	ID          string
+	Name        string
+	Description string
+	Excercise   TrainingExcercise
+	Reps        int64
+	Weight      float64
+	Interval    int64
+}
+
 type TrainingExcercise struct {
 	ID          string
 	Name        string
@@ -20,16 +37,12 @@ const (
 	Biceps     = TargetMuscle("biceps")
 	Shoulders  = TargetMuscle("shoulders")
 	Lats       = TargetMuscle("lats")
-)
 
-const (
 	Stretches  = TrainingCategory("stretches")
 	BodyWeight = TrainingCategory("body_weight")
 	Barbell    = TrainingCategory("barbell")
 	Dumbbells  = TrainingCategory("dumbbells")
-)
 
-const (
 	Beginner     = TrainingDifficulty("beginner")
 	Intermediate = TrainingDifficulty("intermediate")
 	Advanced     = TrainingDifficulty("advanced")
