@@ -32,5 +32,5 @@ const (
 	Quads      = TargetMuscle("quads")
 	Biceps     = TargetMuscle("biceps")
 	Shoulders  = TargetMuscle("shoulders")
-	Lats       = TargetMuscle("lat")
+	Lats       = TargetMuscle("lats")
 )
