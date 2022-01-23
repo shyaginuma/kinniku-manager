@@ -1,14 +1,14 @@
 package model
 
 type TrainingMenu struct {
-	ID          string
+	ID          int64
 	Name        string
 	Description string
 	Menu        []TrainingSet
 }
 
 type TrainingSet struct {
-	ID          string
+	ID          int64
 	Name        string
 	Description string
 	Excercise   TrainingExcercise
@@ -18,7 +18,7 @@ type TrainingSet struct {
 }
 
 type TrainingExcercise struct {
-	ID          string
+	ID          int64
 	Name        string
 	Description string
 	Target      TargetMuscle
