@@ -8,11 +8,11 @@ import (
 )
 
 type TrainingExcerciseRepository struct {
-	db *sql.DB
+	Database *sql.DB
 }
 
 func (repository TrainingExcerciseRepository) ReadAll() ([]model.TrainingExcercise, error) {
-	rows, err := repository.db.Query("SELECT * FROM training_excercises")
+	rows, err := repository.Database.Query("SELECT * FROM training_exercises")
 	if err != nil {
 		return nil, fmt.Errorf("failed to read training excercises: %v", err)
 	}
