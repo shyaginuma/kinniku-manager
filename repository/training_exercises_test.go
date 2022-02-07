@@ -1,7 +1,11 @@
 package repository
 
 import (
+	"regexp"
 	"testing"
+
+	"github.com/kinniku-manager/model"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	_ "github.com/go-sql-driver/mysql"
@@ -16,7 +20,22 @@ func TestTrainingExcerciseRepository_ReadAll(t *testing.T) {
 
 	returnRows := sqlmock.NewRows([]string{"id", "name", "description", "target", "category", "difficulty"})
 	returnRows.AddRow("1", "Barbell Curl", "Barbell Curl", "biceps", "barbell", "beginner")
-	mock.ExpectQuery("select * from training_exercises").WillReturnRows(returnRows)
+	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM training_exercises`)).WillReturnRows(returnRows)
 
 	repository := &TrainingExcerciseRepository{Database: db}
+	excercises, err := repository.ReadAll()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	expected_response := []model.TrainingExcercise{}
+	data := model.TrainingExcercise{
+		ID:          "1",
+		Name:        "Barbell Curl",
+		Description: "Barbell Curl",
+		Target:      model.Biceps,
+		Category:    model.Barbell,
+		Difficulty:  model.Beginner,
+	}
+	expected_response = append(expected_response, data)
+	assert.Equal(t, expected_response, excercises)
 }
