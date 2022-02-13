@@ -1,13 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kinniku-manager/repository"
 )
 
 func main() {
+	r := gin.Default()
+	r.GET("/training_exercise/read_all", readAllTrainingExcercise)
+	r.Run("localhost:8080")
+}
+
+func readAllTrainingExcercise(c *gin.Context) {
 	db, err := repository.NewDBConnection()
 	if err != nil {
 		log.Fatal(err)
@@ -17,5 +24,5 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(excercises)
+	c.IndentedJSON(http.StatusOK, excercises)
 }
