@@ -40,3 +40,7 @@ func (repository TrainingExerciseRepository) ReadAll() ([]model.TrainingExercise
 	}
 	return exercises, nil
 }
+
+func (repository TrainingExerciseRepository) Create(newTrainingExercise model.TrainingExercise) error {
+	return nil
+}
