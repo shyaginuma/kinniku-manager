@@ -11,13 +11,13 @@ type TrainingSet struct {
 	ID          string
 	Name        string
 	Description string
-	Excercise   TrainingExcercise
+	Exercise    TrainingExercise
 	Reps        int64
 	Weight      float64
 	Interval    int64
 }
 
-type TrainingExcercise struct {
+type TrainingExercise struct {
 	ID          string
 	Name        string
 	Description string

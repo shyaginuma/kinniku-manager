@@ -10,19 +10,19 @@ import (
 
 func main() {
 	r := gin.Default()
-	r.GET("/training_exercise/read_all", readAllTrainingExcercise)
+	r.GET("/training_exercise/read_all", readAllTrainingExercises)
 	r.Run("localhost:8080")
 }
 
-func readAllTrainingExcercise(c *gin.Context) {
+func readAllTrainingExercises(c *gin.Context) {
 	db, err := repository.NewDBConnection()
 	if err != nil {
 		log.Fatal(err)
 	}
-	repository := &repository.TrainingExcerciseRepository{Database: db}
-	excercises, err := repository.ReadAll()
+	repository := &repository.TrainingExerciseRepository{Database: db}
+	exercises, err := repository.ReadAll()
 	if err != nil {
 		log.Fatal(err)
 	}
-	c.IndentedJSON(http.StatusOK, excercises)
+	c.IndentedJSON(http.StatusOK, exercises)
 }

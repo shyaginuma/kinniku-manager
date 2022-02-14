@@ -19,7 +19,7 @@ func NewDBConnection() (*sql.DB, error) {
 		),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to convert rows to TrainingExcercise: %v", err)
+		return nil, fmt.Errorf("failed to convert rows to Trainingexercise: %v", err)
 	}
 	return db, nil
 }

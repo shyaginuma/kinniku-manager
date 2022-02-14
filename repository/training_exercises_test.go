@@ -11,7 +11,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func TestTrainingExcerciseRepository_ReadAll(t *testing.T) {
+func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		t.Error(err.Error())
@@ -22,13 +22,13 @@ func TestTrainingExcerciseRepository_ReadAll(t *testing.T) {
 	returnRows.AddRow("1", "Barbell Curl", "Barbell Curl", "biceps", "barbell", "beginner")
 	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM training_exercises`)).WillReturnRows(returnRows)
 
-	repository := &TrainingExcerciseRepository{Database: db}
-	excercises, err := repository.ReadAll()
+	repository := &TrainingExerciseRepository{Database: db}
+	exercises, err := repository.ReadAll()
 	if err != nil {
 		t.Error(err.Error())
 	}
-	expected_response := []model.TrainingExcercise{}
-	data := model.TrainingExcercise{
+	expected_response := []model.TrainingExercise{}
+	data := model.TrainingExercise{
 		ID:          "1",
 		Name:        "Barbell Curl",
 		Description: "Barbell Curl",
@@ -37,5 +37,5 @@ func TestTrainingExcerciseRepository_ReadAll(t *testing.T) {
 		Difficulty:  model.Beginner,
 	}
 	expected_response = append(expected_response, data)
-	assert.Equal(t, expected_response, excercises)
+	assert.Equal(t, expected_response, exercises)
 }

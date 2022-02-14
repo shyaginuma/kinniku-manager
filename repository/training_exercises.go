@@ -7,36 +7,36 @@ import (
 	"github.com/kinniku-manager/model"
 )
 
-type TrainingExcerciseRepository struct {
+type TrainingExerciseRepository struct {
 	Database *sql.DB
 }
 
-func (repository TrainingExcerciseRepository) ReadAll() ([]model.TrainingExcercise, error) {
+func (repository TrainingExerciseRepository) ReadAll() ([]model.TrainingExercise, error) {
 	rows, err := repository.Database.Query("SELECT * FROM training_exercises")
 	if err != nil {
-		return nil, fmt.Errorf("failed to read training excercises: %v", err)
+		return nil, fmt.Errorf("failed to read training exercises: %v", err)
 	}
 	defer rows.Close()
 
-	var excercises []model.TrainingExcercise
+	var exercises []model.TrainingExercise
 	for rows.Next() {
-		var excercise model.TrainingExcercise
+		var exercise model.TrainingExercise
 		err := rows.Scan(
-			&excercise.ID,
-			&excercise.Name,
-			&excercise.Description,
-			&excercise.Target,
-			&excercise.Category,
-			&excercise.Difficulty,
+			&exercise.ID,
+			&exercise.Name,
+			&exercise.Description,
+			&exercise.Target,
+			&exercise.Category,
+			&exercise.Difficulty,
 		)
 		if err != nil {
-			return nil, fmt.Errorf("failed to convert rows to TrainingExcercise: %v", err)
+			return nil, fmt.Errorf("failed to convert rows to Trainingexercise: %v", err)
 		}
-		excercises = append(excercises, excercise)
+		exercises = append(exercises, exercise)
 	}
 	err = rows.Err()
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query: %v", err)
 	}
-	return excercises, nil
+	return exercises, nil
 }
