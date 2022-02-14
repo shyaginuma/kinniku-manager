@@ -39,3 +39,11 @@ func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 	expected_response = append(expected_response, data)
 	assert.Equal(t, expected_response, exercises)
 }
+
+func TestTrainingExerciseRepository_Create(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	defer db.Close()
+}
