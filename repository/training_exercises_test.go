@@ -56,7 +56,8 @@ func TestTrainingExerciseRepository_Create(t *testing.T) {
 		Difficulty:  model.Beginner,
 	}
 
-	mock.ExpectExec(regexp.QuoteMeta("INSERT INTO todo VALUES (?, ?, ?, ?, ?, ?)")).
+	prep := mock.ExpectPrepare(regexp.QuoteMeta(`INSERT INTO training_exercises VALUES(?, ?, ?, ?, ?, ?)`))
+	prep.ExpectExec().
 		WithArgs(data.ID, data.Name, data.Description, data.Target, data.Category, data.Difficulty).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
