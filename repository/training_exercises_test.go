@@ -46,4 +46,22 @@ func TestTrainingExerciseRepository_Create(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
+
+	data := model.TrainingExercise{
+		ID:          "1",
+		Name:        "Barbell Curl",
+		Description: "Barbell Curl",
+		Target:      model.Biceps,
+		Category:    model.Barbell,
+		Difficulty:  model.Beginner,
+	}
+
+	mock.ExpectExec(regexp.QuoteMeta("INSERT INTO todo VALUES (?, ?, ?, ?, ?, ?)")).
+		WithArgs(data.ID, data.Name, data.Description, data.Target, data.Category, data.Difficulty).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	repository := &TrainingExerciseRepository{Database: db}
+	if err := repository.Create(data); err != nil {
+		t.Error(err.Error())
+	}
 }
