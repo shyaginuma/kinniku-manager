@@ -39,3 +39,30 @@ func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 	expected_response = append(expected_response, data)
 	assert.Equal(t, expected_response, exercises)
 }
+
+func TestTrainingExerciseRepository_Create(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	defer db.Close()
+
+	data := model.TrainingExercise{
+		ID:          "1",
+		Name:        "Barbell Curl",
+		Description: "Barbell Curl",
+		Target:      model.Biceps,
+		Category:    model.Barbell,
+		Difficulty:  model.Beginner,
+	}
+
+	prep := mock.ExpectPrepare(regexp.QuoteMeta(`INSERT INTO training_exercises VALUES(?, ?, ?, ?, ?, ?)`))
+	prep.ExpectExec().
+		WithArgs(data.ID, data.Name, data.Description, data.Target, data.Category, data.Difficulty).
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	repository := &TrainingExerciseRepository{Database: db}
+	if err := repository.Create(data); err != nil {
+		t.Error(err.Error())
+	}
+}

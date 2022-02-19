@@ -40,3 +40,21 @@ func (repository TrainingExerciseRepository) ReadAll() ([]model.TrainingExercise
 	}
 	return exercises, nil
 }
+
+func (repository TrainingExerciseRepository) Create(newTrainingExercise model.TrainingExercise) error {
+	stmt, err := repository.Database.Prepare("INSERT INTO training_exercises VALUES(?, ?, ?, ?, ?, ?)")
+	if err != nil {
+		return err
+	}
+	if _, err := stmt.Exec(
+		newTrainingExercise.ID,
+		newTrainingExercise.Name,
+		newTrainingExercise.Description,
+		newTrainingExercise.Target,
+		newTrainingExercise.Category,
+		newTrainingExercise.Difficulty,
+	); err != nil {
+		return err
+	}
+	return nil
+}
