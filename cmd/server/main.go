@@ -32,16 +32,16 @@ func readAllTrainingExercises(c *gin.Context) {
 func createTrainingExercise(c *gin.Context) {
 	var newTrainingExercise model.TrainingExercise
 	if err := c.BindJSON(&newTrainingExercise); err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to bind json: %v", err)
 	}
 
 	db, err := repository.NewDBConnection()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to establish connection with db: %v", err)
 	}
 	repository := &repository.TrainingExerciseRepository{Database: db}
 	if err := repository.Create(newTrainingExercise); err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to insert record into db: %v", err)
 	}
 	c.IndentedJSON(http.StatusCreated, newTrainingExercise)
 }
