@@ -13,9 +13,9 @@ func NewDBConnection() (*sql.DB, error) {
 		"mysql",
 		fmt.Sprintf(
 			"%s:%s@/%s",
-			os.Getenv("DBUSER"),
-			os.Getenv("DBPASS"),
-			os.Getenv("DBNAME"),
+			os.Getenv("MYSQL_USER"),
+			os.Getenv("MYSQL_PASSWORD"),
+			os.Getenv("MYSQL_DATABASE"),
 		),
 	)
 	if err != nil {
