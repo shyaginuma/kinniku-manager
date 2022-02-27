@@ -13,7 +13,7 @@ func main() {
 	r := gin.Default()
 	r.GET("/training_exercise/read_all", readAllTrainingExercises)
 	r.POST("/training_exercise/save", createTrainingExercise)
-	r.Run("localhost:8080")
+	r.Run()
 }
 
 func readAllTrainingExercises(c *gin.Context) {
