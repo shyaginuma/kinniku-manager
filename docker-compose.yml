@@ -18,7 +18,10 @@ services:
       - MYSQL_DATABASE
       - MYSQL_USER
       - MYSQL_PASSWORD
+      - MYSQL_HOST
     restart: always
+    volumes:
+      - ./mysql/:/docker-entrypoint-initdb.d
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
       - 3306:3306
