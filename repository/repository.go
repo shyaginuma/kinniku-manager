@@ -12,14 +12,16 @@ func NewDBConnection() (*sql.DB, error) {
 	db, err := sql.Open(
 		"mysql",
 		fmt.Sprintf(
-			"%s:%s@/%s",
+			"%s:%s@tcp(%s:%s)/%s",
 			os.Getenv("MYSQL_USER"),
 			os.Getenv("MYSQL_PASSWORD"),
+			os.Getenv("MYSQL_HOST"),
+			os.Getenv("MYSQL_PORT"),
 			os.Getenv("MYSQL_DATABASE"),
 		),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to convert rows to Trainingexercise: %v", err)
+		return nil, err
 	}
 	return db, nil
 }
