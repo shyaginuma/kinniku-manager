@@ -25,3 +25,13 @@ services:
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
       - 3306:3306
+  backend-test:
+    container_name: backend-test
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    command: go test -v ./...
+    ports:
+      - 8080:8080
