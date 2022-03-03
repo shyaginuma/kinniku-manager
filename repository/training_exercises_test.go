@@ -12,23 +12,12 @@ import (
 )
 
 func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	// set up db & sample data
+	db, err := NewDBConnection()
 	if err != nil {
 		t.Error(err.Error())
 	}
-	defer db.Close()
-
-	returnRows := sqlmock.NewRows([]string{"id", "name", "description", "target", "category", "difficulty"})
-	returnRows.AddRow("1", "Barbell Curl", "Barbell Curl", "biceps", "barbell", "beginner")
-	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM training_exercises`)).WillReturnRows(returnRows)
-
-	repository := &TrainingExerciseRepository{Database: db}
-	exercises, err := repository.ReadAll()
-	if err != nil {
-		t.Error(err.Error())
-	}
-	expected_response := []model.TrainingExercise{}
-	data := model.TrainingExercise{
+	sample_data := model.TrainingExercise{
 		ID:          "1",
 		Name:        "Barbell Curl",
 		Description: "Barbell Curl",
@@ -36,7 +25,28 @@ func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 		Category:    model.Barbell,
 		Difficulty:  model.Beginner,
 	}
-	expected_response = append(expected_response, data)
+	stmt, err := db.Prepare("INSERT INTO training_exercises VALUES(?, ?, ?, ?, ?, ?)")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if _, err := stmt.Exec(
+		sample_data.ID,
+		sample_data.Name,
+		sample_data.Description,
+		sample_data.Target,
+		sample_data.Category,
+		sample_data.Difficulty,
+	); err != nil {
+		t.Error(err.Error())
+	}
+
+	repository := &TrainingExerciseRepository{Database: db}
+	exercises, err := repository.ReadAll()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	expected_response := []model.TrainingExercise{}
+	expected_response = append(expected_response, sample_data)
 	assert.Equal(t, expected_response, exercises)
 }
 
