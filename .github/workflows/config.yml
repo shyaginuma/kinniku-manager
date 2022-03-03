@@ -16,11 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: build
-        run: go build ./...
+        run: make build
   test:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: test
-        run: go test ./... -v
+        run: make go-test
