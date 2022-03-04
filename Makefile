@@ -8,4 +8,4 @@ run-server:
 
 .PHONY: go-test
 go-test:
-	docker-compose up backend-test --build
+	docker-compose up backend_test --build
