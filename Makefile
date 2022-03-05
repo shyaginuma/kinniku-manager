@@ -8,5 +8,5 @@ run-server:
 
 .PHONY: go-test
 go-test:
-	docker-compose up db -d
+	docker-compose up -d db
 	docker-compose up --build --remove-orphans --exit-code-from backend_test backend_test
