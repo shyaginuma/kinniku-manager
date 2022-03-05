@@ -5,16 +5,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"github.com/kinniku-manager/model"
 	"github.com/kinniku-manager/repository"
 )
 
 func main() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal(err)
-	}
 	r := gin.Default()
 	r.GET("/training_exercise/read_all", readAllTrainingExercises)
 	r.POST("/training_exercise/save", createTrainingExercise)
