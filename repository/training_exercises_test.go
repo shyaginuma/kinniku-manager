@@ -40,6 +40,7 @@ func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 		t.Error(err.Error())
 	}
 
+	// test
 	repository := &TrainingExerciseRepository{Database: db}
 	exercises, err := repository.ReadAll()
 	if err != nil {
