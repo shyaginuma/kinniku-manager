@@ -1,13 +1,11 @@
 package repository
 
 import (
-	"regexp"
 	"testing"
 
 	"github.com/kinniku-manager/model"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/DATA-DOG/go-sqlmock"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -17,6 +15,7 @@ func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	}
+	defer db.Close()
 	sample_data := model.TrainingExercise{
 		ID:          1,
 		Name:        "Barbell Curl",
@@ -52,14 +51,14 @@ func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 }
 
 func TestTrainingExerciseRepository_Create(t *testing.T) {
-	db, mock, err := sqlmock.New()
+	// set up db & sample data
+	db, err := NewDBConnection()
 	if err != nil {
 		t.Error(err.Error())
 	}
 	defer db.Close()
-
-	data := model.TrainingExercise{
-		ID:          "1",
+	sample_data := model.TrainingExercise{
+		ID:          1,
 		Name:        "Barbell Curl",
 		Description: "Barbell Curl",
 		Target:      model.Biceps,
@@ -67,13 +66,8 @@ func TestTrainingExerciseRepository_Create(t *testing.T) {
 		Difficulty:  model.Beginner,
 	}
 
-	prep := mock.ExpectPrepare(regexp.QuoteMeta(`INSERT INTO training_exercises VALUES(?, ?, ?, ?, ?, ?)`))
-	prep.ExpectExec().
-		WithArgs(data.ID, data.Name, data.Description, data.Target, data.Category, data.Difficulty).
-		WillReturnResult(sqlmock.NewResult(1, 1))
-
 	repository := &TrainingExerciseRepository{Database: db}
-	if err := repository.Create(data); err != nil {
+	if err := repository.Create(sample_data); err != nil {
 		t.Error(err.Error())
 	}
 }
