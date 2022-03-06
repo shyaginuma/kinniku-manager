@@ -18,7 +18,7 @@ func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 		t.Error(err.Error())
 	}
 	sample_data := model.TrainingExercise{
-		ID:          "1",
+		ID:          1,
 		Name:        "Barbell Curl",
 		Description: "Barbell Curl",
 		Target:      model.Biceps,
