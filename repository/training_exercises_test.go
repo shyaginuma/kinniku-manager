@@ -58,7 +58,7 @@ func TestTrainingExerciseRepository_Create(t *testing.T) {
 	}
 	defer db.Close()
 	sample_data := model.TrainingExercise{
-		ID:          1,
+		ID:          0,
 		Name:        "Barbell Curl",
 		Description: "Barbell Curl",
 		Target:      model.Biceps,
