@@ -106,7 +106,7 @@ func TestTrainingExerciseRepository_Update(t *testing.T) {
 	// test
 	repository := &TrainingExerciseRepository{Database: db}
 	sample_data.Difficulty = model.Intermediate
-	if err := repository.Update(sample_data.ID, sample_data); err != nil {
+	if err := repository.Update(sample_data); err != nil {
 		t.Error(err.Error())
 	}
 }

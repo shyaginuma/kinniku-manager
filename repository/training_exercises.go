@@ -58,3 +58,29 @@ func (repository TrainingExerciseRepository) Create(newTrainingExercise model.Tr
 	}
 	return nil
 }
+
+func (repository TrainingExerciseRepository) Update(modifiedTrainingExercise model.TrainingExercise) error {
+	stmt, err := repository.Database.Prepare(`
+		UPDATE training_exercises
+		SET name = ?,
+			description = ?,
+			target = ?,
+			category = ?,
+			difficulty = ?
+		WHERE id = ?
+	`)
+	if err != nil {
+		return err
+	}
+	if _, err := stmt.Exec(
+		modifiedTrainingExercise.Name,
+		modifiedTrainingExercise.Description,
+		modifiedTrainingExercise.Target,
+		modifiedTrainingExercise.Category,
+		modifiedTrainingExercise.Difficulty,
+		modifiedTrainingExercise.ID,
+	); err != nil {
+		return err
+	}
+	return nil
+}
