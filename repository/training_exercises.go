@@ -84,3 +84,14 @@ func (repository TrainingExerciseRepository) Update(modifiedTrainingExercise mod
 	}
 	return nil
 }
+
+func (repository TrainingExerciseRepository) Delete(trainingExerciseID int64) error {
+	stmt, err := repository.Database.Prepare("DELETE FROM training_exercises WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	if _, err := stmt.Exec(trainingExerciseID); err != nil {
+		return err
+	}
+	return nil
+}

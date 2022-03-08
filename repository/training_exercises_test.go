@@ -110,3 +110,40 @@ func TestTrainingExerciseRepository_Update(t *testing.T) {
 		t.Error(err.Error())
 	}
 }
+
+func TestTrainingExerciseRepository_Delete(t *testing.T) {
+	// set up db & sample data
+	db, err := NewDBConnection()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	defer db.Close()
+	sample_data := model.TrainingExercise{
+		ID:          100,
+		Name:        "Barbell Curl",
+		Description: "Barbell Curl",
+		Target:      model.Biceps,
+		Category:    model.Barbell,
+		Difficulty:  model.Beginner,
+	}
+	stmt, err := db.Prepare("INSERT INTO training_exercises VALUES(?, ?, ?, ?, ?, ?)")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if _, err := stmt.Exec(
+		sample_data.ID,
+		sample_data.Name,
+		sample_data.Description,
+		sample_data.Target,
+		sample_data.Category,
+		sample_data.Difficulty,
+	); err != nil {
+		t.Error(err.Error())
+	}
+
+	// test
+	repository := &TrainingExerciseRepository{Database: db}
+	if err := repository.Delete(sample_data.ID); err != nil {
+		t.Error(err.Error())
+	}
+}
