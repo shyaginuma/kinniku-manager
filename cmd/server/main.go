@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kinniku-manager/model"
@@ -13,6 +14,8 @@ func main() {
 	r := gin.Default()
 	r.GET("/training_exercise/read_all", readAllTrainingExercises)
 	r.POST("/training_exercise/save", createTrainingExercise)
+	r.PUT("/training_exercise/edit", updateTrainingExercise)
+	r.DELETE("/training_exercise/delete/:id", deleteTrainingExercise)
 	r.Run()
 }
 
@@ -44,4 +47,37 @@ func createTrainingExercise(c *gin.Context) {
 		log.Fatalf("failed to insert record into db: %v", err)
 	}
 	c.IndentedJSON(http.StatusCreated, newTrainingExercise)
+}
+
+func updateTrainingExercise(c *gin.Context) {
+	var updatedTrainingExercise model.TrainingExercise
+	if err := c.BindJSON(&updatedTrainingExercise); err != nil {
+		log.Fatalf("failed to bind json: %v", err)
+	}
+
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatalf("failed to establish connection with db: %v", err)
+	}
+	repository := &repository.TrainingExerciseRepository{Database: db}
+	if err := repository.Update(updatedTrainingExercise); err != nil {
+		log.Fatalf("failed to update data: %v", err)
+	}
+	c.IndentedJSON(http.StatusCreated, updatedTrainingExercise)
+}
+
+func deleteTrainingExercise(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		log.Fatalf("failed to read id parameter from path: %v", err)
+	}
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatalf("failed to establish connection with db: %v", err)
+	}
+	repository := &repository.TrainingExerciseRepository{Database: db}
+	if err := repository.Delete(id); err != nil {
+		log.Fatalf("failed to delete data: %v", err)
+	}
+	c.String(http.StatusOK, "successfully delete training exercise.")
 }
