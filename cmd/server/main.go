@@ -12,7 +12,8 @@ import (
 
 func main() {
 	r := gin.Default()
-	r.GET("/training_exercise/read_all", readAllTrainingExercises)
+	r.GET("/training_exercise/", readAllTrainingExercises)
+	r.GET("/training_exercise/:id", readTrainingExercises)
 	r.POST("/training_exercise/save", createTrainingExercise)
 	r.PUT("/training_exercise/edit", updateTrainingExercise)
 	r.DELETE("/training_exercise/delete/:id", deleteTrainingExercise)
@@ -26,6 +27,23 @@ func readAllTrainingExercises(c *gin.Context) {
 	}
 	repository := &repository.TrainingExerciseRepository{Database: db}
 	exercises, err := repository.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.IndentedJSON(http.StatusOK, exercises)
+}
+
+func readTrainingExercises(c *gin.Context) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		log.Fatalf("failed to read id parameter from path: %v", err)
+	}
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	repository := &repository.TrainingExerciseRepository{Database: db}
+	exercises, err := repository.Read(id)
 	if err != nil {
 		log.Fatal(err)
 	}
