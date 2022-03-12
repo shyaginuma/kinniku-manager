@@ -41,6 +41,23 @@ func (repository TrainingExerciseRepository) ReadAll() ([]model.TrainingExercise
 	return exercises, nil
 }
 
+func (repository TrainingExerciseRepository) Read(id int64) (model.TrainingExercise, error) {
+	row := repository.Database.QueryRow("SELECT * FROM training_exercises where id = ?", id)
+	var exercise model.TrainingExercise
+	err := row.Scan(
+		&exercise.ID,
+		&exercise.Name,
+		&exercise.Description,
+		&exercise.Target,
+		&exercise.Category,
+		&exercise.Difficulty,
+	)
+	if err != nil {
+		return model.TrainingExercise{}, err
+	}
+	return exercise, nil
+}
+
 func (repository TrainingExerciseRepository) Create(newTrainingExercise model.TrainingExercise) error {
 	stmt, err := repository.Database.Prepare("INSERT INTO training_exercises VALUES(?, ?, ?, ?, ?, ?)")
 	if err != nil {
