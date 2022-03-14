@@ -39,3 +39,21 @@ func (repository TrainingSetRepository) ReadAll() ([]model.TrainingSet, error) {
 	}
 	return sets, nil
 }
+
+func (repository TrainingSetRepository) Read(id int64) (model.TrainingSet, error) {
+	row := repository.Database.QueryRow("SELECT * FROM training_sets where id = ?", id)
+	var set model.TrainingSet
+	err := row.Scan(
+		&set.ID,
+		&set.Name,
+		&set.Description,
+		&set.ExerciseID,
+		&set.Reps,
+		&set.Weight,
+		&set.Interval,
+	)
+	if err != nil {
+		return model.TrainingSet{}, err
+	}
+	return set, nil
+}
