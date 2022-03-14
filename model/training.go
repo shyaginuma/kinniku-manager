@@ -11,7 +11,7 @@ type TrainingSet struct {
 	ID          int64
 	Name        string
 	Description string
-	Exercise    TrainingExercise
+	ExerciseID  int64
 	Reps        int64
 	Weight      float64
 	Interval    int64
