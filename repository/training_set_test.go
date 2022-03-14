@@ -23,7 +23,7 @@ func TestTrainingSetRepository_ReadAll(t *testing.T) {
 		Weight:      15,
 		Interval:    3,
 	}
-	stmt, err := db.Prepare("INSERT INTO training_exercises VALUES(?, ?, ?, ?, ?, ?)")
+	stmt, err := db.Prepare("INSERT INTO training_sets VALUES(?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		t.Error(err.Error())
 	}
