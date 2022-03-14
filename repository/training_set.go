@@ -84,7 +84,7 @@ func (repository TrainingSetRepository) Update(modifiedTrainingSet model.Trainin
 			description = ?,
 			exercise_id = ?,
 			reps = ?,
-			weight_kg = ?
+			weight_kg = ?,
 			interval_min = ?
 		WHERE id = ?
 	`)
