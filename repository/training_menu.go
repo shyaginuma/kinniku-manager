@@ -11,6 +11,24 @@ type TrainingMenuRepository struct {
 }
 
 func (repository TrainingMenuRepository) ReadAll() ([]model.TrainingMenu, error) {
+	query := `
+	SELECT
+		training_menus.id,
+		training_menus.name,
+		training_menus.description,
+		GROUP_CONCAT(training_menu_set_relations.set_id) as set_ids
+	FROM
+		training_menus
+	LEFT JOIN
+		training_menu_set_relations
+		ON training_menus.id = training_menu_set_relations.menu_id
+	`
+	rows, err := repository.Database.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
 	return []model.TrainingMenu{}, nil
 }
 
