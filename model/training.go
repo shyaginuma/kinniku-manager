@@ -4,7 +4,7 @@ type TrainingMenu struct {
 	ID          int64
 	Name        string
 	Description string
-	Menu        []TrainingSet
+	Menu        []int64
 }
 
 type TrainingSet struct {
