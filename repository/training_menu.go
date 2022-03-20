@@ -71,7 +71,32 @@ func (repository TrainingMenuRepository) ReadAll() ([]model.TrainingMenu, error)
 }
 
 func (repository TrainingMenuRepository) Read(id int64) (model.TrainingMenu, error) {
-	return model.TrainingMenu{}, nil
+	query := `
+	SELECT
+		training_menus.id,
+		training_menus.name,
+		training_menus.description,
+		GROUP_CONCAT(training_menu_set_relations.set_id) as set_ids
+	FROM
+		training_menus
+	LEFT JOIN
+		training_menu_set_relations
+		ON training_menus.id = training_menu_set_relations.menu_id
+	WHERE
+	training_menus.id = ?
+	`
+	row := repository.Database.QueryRow(query, id)
+	var menu model.TrainingMenu
+	err := row.Scan(
+		&menu.ID,
+		&menu.Name,
+		&menu.Description,
+		&menu.Menu,
+	)
+	if err != nil {
+		return model.TrainingMenu{}, err
+	}
+	return menu, nil
 }
 
 func (repository TrainingMenuRepository) Create(newTraningMenu model.TrainingMenu) error {

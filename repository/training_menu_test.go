@@ -65,6 +65,46 @@ func TestTrainingMenuRepository_Read(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
+	sample_data := model.TrainingMenu{
+		ID:          10,
+		Name:        "Barbell Curl",
+		Description: "Barbell Curl",
+		Menu:        []int64{1},
+	}
+
+	// insert to table training_menus
+	stmt_menus, err := db.Prepare("INSERT INTO training_menus VALUES(?, ?, ?)")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if _, err := stmt_menus.Exec(
+		sample_data.ID,
+		sample_data.Name,
+		sample_data.Description,
+	); err != nil {
+		t.Error(err.Error())
+	}
+
+	// insert to table training_menus
+	stmt_relations, err := db.Prepare("INSERT INTO training_menu_set_relations VALUES(?, ?, ?)")
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if _, err := stmt_relations.Exec(
+		0,
+		sample_data.ID,
+		sample_data.Menu[0],
+	); err != nil {
+		t.Error(err.Error())
+	}
+
+	// test
+	repository := &TrainingMenuRepository{Database: db}
+	menu, err := repository.Read(sample_data.ID)
+	if err != nil {
+		t.Error(err.Error())
+	}
+	assert.Equal(t, sample_data, menu)
 }
 
 func TestTrainingMenuRepository_Create(t *testing.T) {
