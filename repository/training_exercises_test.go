@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"os"
 	"testing"
 
 	"github.com/kinniku-manager/model"
@@ -9,46 +8,6 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 )
-
-func GetSampleExercise() model.TrainingExercise {
-	return model.TrainingExercise{
-		ID:          1,
-		Name:        "Barbell Curl",
-		Description: "Barbell Curl",
-		Target:      model.Biceps,
-		Category:    model.Barbell,
-		Difficulty:  model.Beginner,
-	}
-}
-
-func TestMain(m *testing.M) {
-	db, err := NewDBConnection()
-	if err != nil {
-		os.Exit(1)
-	}
-	stmt, err := db.Prepare("INSERT INTO training_exercises VALUES(?, ?, ?, ?, ?, ?)")
-	if err != nil {
-		os.Exit(1)
-	}
-	sample_exercise := GetSampleExercise()
-	if _, err := stmt.Exec(
-		sample_exercise.ID,
-		sample_exercise.Name,
-		sample_exercise.Description,
-		sample_exercise.Target,
-		sample_exercise.Category,
-		sample_exercise.Difficulty,
-	); err != nil {
-		os.Exit(1)
-	}
-	defer db.Close()
-	status := m.Run()
-	_, err = db.Exec("TRUNCATE training_exercises")
-	if err != nil {
-		os.Exit(1)
-	}
-	os.Exit(status)
-}
 
 func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 	// set up db & sample data
