@@ -16,7 +16,9 @@ func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
-	sample_exercise := GetSampleExercise()
+	sample_exercise_a := GetSampleExercise()
+	sample_exercise_b := GetSampleExercise()
+	sample_exercise_b.ID = 2
 
 	// test
 	repository := &TrainingExerciseRepository{Database: db}
@@ -25,7 +27,8 @@ func TestTrainingExerciseRepository_ReadAll(t *testing.T) {
 		t.Error(err.Error())
 	}
 	expected_response := []model.TrainingExercise{}
-	expected_response = append(expected_response, sample_exercise)
+	expected_response = append(expected_response, sample_exercise_a)
+	expected_response = append(expected_response, sample_exercise_b)
 	assert.Equal(t, expected_response, exercises)
 }
 
