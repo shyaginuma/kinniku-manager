@@ -52,6 +52,14 @@ func TestTrainingMenuRepository_Create(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
+	sample_data := GetSampleMenu()
+	sample_data.ID = 10
+
+	// test
+	repository := &TrainingMenuRepository{Database: db}
+	if err := repository.Create(sample_data); err != nil {
+		t.Error(err.Error())
+	}
 }
 
 func TestTrainingMenuRepository_Update(t *testing.T) {
@@ -61,6 +69,14 @@ func TestTrainingMenuRepository_Update(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
+	sample_data := GetSampleMenu()
+	sample_data.Description = "high weight"
+
+	// test
+	repository := &TrainingMenuRepository{Database: db}
+	if err := repository.Update(sample_data); err != nil {
+		t.Error(err.Error())
+	}
 }
 
 func TestTrainingMenuRepository_Delete(t *testing.T) {
@@ -70,4 +86,11 @@ func TestTrainingMenuRepository_Delete(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
+	sample_data := GetSampleMenu()
+
+	// test
+	repository := &TrainingMenuRepository{Database: db}
+	if err := repository.Delete(sample_data.ID); err != nil {
+		t.Error(err.Error())
+	}
 }

@@ -119,13 +119,92 @@ func (repository TrainingMenuRepository) Read(id int64) (model.TrainingMenu, err
 }
 
 func (repository TrainingMenuRepository) Create(newTraningMenu model.TrainingMenu) error {
+	stmt_menu, err := repository.Database.Prepare("INSERT INTO training_menus VALUES(?, ?, ?)")
+	if err != nil {
+		return err
+	}
+	if _, err := stmt_menu.Exec(
+		newTraningMenu.ID,
+		newTraningMenu.Name,
+		newTraningMenu.Description,
+	); err != nil {
+		return err
+	}
+
+	stmt_relation, err := repository.Database.Prepare("INSERT INTO training_menu_set_relations VALUES(?, ?, ?)")
+	if err != nil {
+		return err
+	}
+	for _, set_id := range newTraningMenu.Menu {
+		if _, err := stmt_relation.Exec(
+			0,
+			newTraningMenu.ID,
+			set_id,
+		); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
 func (repository TrainingMenuRepository) Update(modifiedTraningMenu model.TrainingMenu) error {
+	stmt_menu, err := repository.Database.Prepare(`
+		UPDATE training_menus
+		SET name = ?,
+			description = ?
+		WHERE id = ?
+	`)
+	if err != nil {
+		return err
+	}
+	if _, err := stmt_menu.Exec(
+		modifiedTraningMenu.Name,
+		modifiedTraningMenu.Description,
+		modifiedTraningMenu.ID,
+	); err != nil {
+		return err
+	}
+
+	// TODO: 直す。relationのIDは基本わからないので、Clean up & Insert?
+	stmt_relation_delete, err := repository.Database.Prepare("DELETE FROM training_menu_set_relations WHERE menu_id = ?")
+	if err != nil {
+		return err
+	}
+	if _, err := stmt_relation_delete.Exec(modifiedTraningMenu.ID); err != nil {
+		return err
+	}
+
+	stmt_relation, err := repository.Database.Prepare("INSERT INTO training_menu_set_relations VALUES(?, ?, ?)")
+	if err != nil {
+		return err
+	}
+	for _, set_id := range modifiedTraningMenu.Menu {
+		if _, err := stmt_relation.Exec(
+			0,
+			modifiedTraningMenu.ID,
+			set_id,
+		); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
-func (repository TrainingMenuRepository) Delete(id int64) error {
+func (repository TrainingMenuRepository) Delete(trainingMenuID int64) error {
+	stmt_relation, err := repository.Database.Prepare("DELETE FROM training_menu_set_relations WHERE menu_id = ?")
+	if err != nil {
+		return err
+	}
+	if _, err := stmt_relation.Exec(trainingMenuID); err != nil {
+		return err
+	}
+
+	stmt_menu, err := repository.Database.Prepare("DELETE FROM training_menus WHERE id = ?")
+	if err != nil {
+		return err
+	}
+	if _, err := stmt_menu.Exec(trainingMenuID); err != nil {
+		return err
+	}
 	return nil
 }
