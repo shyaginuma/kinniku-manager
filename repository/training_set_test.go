@@ -14,30 +14,9 @@ func TestTrainingSetRepository_ReadAll(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
-	sample_data := model.TrainingSet{
-		ID:          1,
-		Name:        "Barbell Curl",
-		Description: "Barbell Curl",
-		ExerciseID:  1,
-		Reps:        12,
-		Weight:      15,
-		Interval:    3,
-	}
-	stmt, err := db.Prepare("INSERT INTO training_sets VALUES(?, ?, ?, ?, ?, ?, ?)")
-	if err != nil {
-		t.Error(err.Error())
-	}
-	if _, err := stmt.Exec(
-		sample_data.ID,
-		sample_data.Name,
-		sample_data.Description,
-		sample_data.ExerciseID,
-		sample_data.Reps,
-		sample_data.Weight,
-		sample_data.Interval,
-	); err != nil {
-		t.Error(err.Error())
-	}
+	sample_set_a := GetSampleSet()
+	sample_set_b := GetSampleSet()
+	sample_set_b.ID = 2
 
 	// test
 	repository := &TrainingSetRepository{Database: db}
@@ -46,7 +25,8 @@ func TestTrainingSetRepository_ReadAll(t *testing.T) {
 		t.Error(err.Error())
 	}
 	expected_response := []model.TrainingSet{}
-	expected_response = append(expected_response, sample_data)
+	expected_response = append(expected_response, sample_set_a)
+	expected_response = append(expected_response, sample_set_b)
 	assert.Equal(t, expected_response, sets)
 }
 
@@ -57,38 +37,15 @@ func TestTrainingSetRepository_Read(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
-	sample_data := model.TrainingSet{
-		ID:          10,
-		Name:        "Barbell Curl",
-		Description: "Barbell Curl",
-		ExerciseID:  1,
-		Reps:        12,
-		Weight:      15,
-		Interval:    3,
-	}
-	stmt, err := db.Prepare("INSERT INTO training_sets VALUES(?, ?, ?, ?, ?, ?, ?)")
-	if err != nil {
-		t.Error(err.Error())
-	}
-	if _, err := stmt.Exec(
-		sample_data.ID,
-		sample_data.Name,
-		sample_data.Description,
-		sample_data.ExerciseID,
-		sample_data.Reps,
-		sample_data.Weight,
-		sample_data.Interval,
-	); err != nil {
-		t.Error(err.Error())
-	}
+	sample_set := GetSampleSet()
 
 	// test
 	repository := &TrainingSetRepository{Database: db}
-	set, err := repository.Read(sample_data.ID)
+	set, err := repository.Read(sample_set.ID)
 	if err != nil {
 		t.Error(err.Error())
 	}
-	assert.Equal(t, sample_data, set)
+	assert.Equal(t, sample_set, set)
 }
 
 func TestTrainingSetRepository_Create(t *testing.T) {
@@ -98,19 +55,12 @@ func TestTrainingSetRepository_Create(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
-	sample_data := model.TrainingSet{
-		ID:          0,
-		Name:        "Barbell Curl",
-		Description: "Barbell Curl",
-		ExerciseID:  1,
-		Reps:        12,
-		Weight:      15,
-		Interval:    3,
-	}
+	sample_set := GetSampleSet()
+	sample_set.ID = 10
 
 	// test
 	repository := &TrainingSetRepository{Database: db}
-	if err := repository.Create(sample_data); err != nil {
+	if err := repository.Create(sample_set); err != nil {
 		t.Error(err.Error())
 	}
 }
@@ -122,35 +72,12 @@ func TestTrainingSetRepository_Update(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
-	sample_data := model.TrainingSet{
-		ID:          100,
-		Name:        "Barbell Curl",
-		Description: "Barbell Curl",
-		ExerciseID:  1,
-		Reps:        12,
-		Weight:      15,
-		Interval:    3,
-	}
-	stmt, err := db.Prepare("INSERT INTO training_sets VALUES(?, ?, ?, ?, ?, ?, ?)")
-	if err != nil {
-		t.Error(err.Error())
-	}
-	if _, err := stmt.Exec(
-		sample_data.ID,
-		sample_data.Name,
-		sample_data.Description,
-		sample_data.ExerciseID,
-		sample_data.Reps,
-		sample_data.Weight,
-		sample_data.Interval,
-	); err != nil {
-		t.Error(err.Error())
-	}
+	sample_set := GetSampleSet()
 
 	// test
 	repository := &TrainingSetRepository{Database: db}
-	sample_data.Weight = 20
-	if err := repository.Update(sample_data); err != nil {
+	sample_set.Weight = 20
+	if err := repository.Update(sample_set); err != nil {
 		t.Error(err.Error())
 	}
 }
@@ -162,34 +89,11 @@ func TestTrainingSetRepository_Delete(t *testing.T) {
 		t.Error(err.Error())
 	}
 	defer db.Close()
-	sample_data := model.TrainingSet{
-		ID:          1000,
-		Name:        "Barbell Curl",
-		Description: "Barbell Curl",
-		ExerciseID:  1,
-		Reps:        12,
-		Weight:      15,
-		Interval:    3,
-	}
-	stmt, err := db.Prepare("INSERT INTO training_sets VALUES(?, ?, ?, ?, ?, ?, ?)")
-	if err != nil {
-		t.Error(err.Error())
-	}
-	if _, err := stmt.Exec(
-		sample_data.ID,
-		sample_data.Name,
-		sample_data.Description,
-		sample_data.ExerciseID,
-		sample_data.Reps,
-		sample_data.Weight,
-		sample_data.Interval,
-	); err != nil {
-		t.Error(err.Error())
-	}
+	sample_set := GetSampleSet()
 
 	// test
 	repository := &TrainingSetRepository{Database: db}
-	if err := repository.Delete(sample_data.ID); err != nil {
+	if err := repository.Delete(sample_set.ID); err != nil {
 		t.Error(err.Error())
 	}
 }
