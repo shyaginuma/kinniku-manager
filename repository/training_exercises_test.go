@@ -98,3 +98,30 @@ func TestTrainingExerciseRepository_Delete(t *testing.T) {
 		t.Error(err.Error())
 	}
 }
+
+func TestTrainingExerciseRepository_Search(t *testing.T) {
+	// set up db & sample data
+	db, err := NewDBConnection()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	defer db.Close()
+	sample_exercise := GetSampleExercise()
+
+	// test
+	repository := &TrainingExerciseRepository{Database: db}
+	results, err := repository.Search(
+		WithSearchLimit(30),
+		WithSearchKeyword([]string{"Curl"}),
+		WithTargetMuscle(model.Biceps),
+		WithTrainingCategory(model.Barbell),
+		WithTrainingDifficulty(model.Beginner),
+	)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	expected_response := []model.TrainingExercise{}
+	expected_response = append(expected_response, sample_exercise)
+	assert.Equal(t, expected_response, results)
+}

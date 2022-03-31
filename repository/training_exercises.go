@@ -3,12 +3,53 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"reflect"
 
 	"github.com/kinniku-manager/model"
 )
 
 type TrainingExerciseRepository struct {
 	Database *sql.DB
+}
+
+type TrainingExerciseSearchOptions struct {
+	searchLimit        int
+	searchKeyword      []string
+	targetMuscle       model.TargetMuscle
+	trainingCategory   model.TrainingCategory
+	trainingDifficulty model.TrainingDifficulty
+}
+
+type TrainingExerciseSearchOption func(TrainingExerciseSearchOptions)
+
+func WithSearchLimit(searchLimit int) TrainingExerciseSearchOption {
+	return func(options TrainingExerciseSearchOptions) {
+		options.searchLimit = searchLimit
+	}
+}
+
+func WithSearchKeyword(searchKeyword []string) TrainingExerciseSearchOption {
+	return func(options TrainingExerciseSearchOptions) {
+		options.searchKeyword = searchKeyword
+	}
+}
+
+func WithTargetMuscle(targetMuscle model.TargetMuscle) TrainingExerciseSearchOption {
+	return func(options TrainingExerciseSearchOptions) {
+		options.targetMuscle = targetMuscle
+	}
+}
+
+func WithTrainingCategory(trainingCategory model.TrainingCategory) TrainingExerciseSearchOption {
+	return func(options TrainingExerciseSearchOptions) {
+		options.trainingCategory = trainingCategory
+	}
+}
+
+func WithTrainingDifficulty(trainingDifficulty model.TrainingDifficulty) TrainingExerciseSearchOption {
+	return func(options TrainingExerciseSearchOptions) {
+		options.trainingDifficulty = trainingDifficulty
+	}
 }
 
 func (repository TrainingExerciseRepository) ReadAll() ([]model.TrainingExercise, error) {
@@ -111,4 +152,53 @@ func (repository TrainingExerciseRepository) Delete(trainingExerciseID int64) er
 		return err
 	}
 	return nil
+}
+
+func (repository TrainingExerciseRepository) Search(options ...TrainingExerciseSearchOption) ([]model.TrainingExercise, error) {
+	search_options := TrainingExerciseSearchOptions{
+		searchLimit:        10,
+		searchKeyword:      []string{""},
+		targetMuscle:       "",
+		trainingCategory:   "",
+		trainingDifficulty: "",
+	}
+	for _, fn := range options {
+		fn(search_options)
+	}
+
+	base_query := "SELECT * FROM training_exercises WHERE 1=1"
+	if reflect.DeepEqual(search_options.searchKeyword, []string{""}) {
+		for _, keyword := range search_options.searchKeyword {
+			base_query += fmt.Sprintf("AND (name LIKE '%%%s%%' or description LIKE '%%%s%%')", keyword, keyword)
+		}
+	}
+	base_query += fmt.Sprintf("LIMIT %d", search_options.searchLimit)
+
+	rows, err := repository.Database.Query(base_query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var exercises []model.TrainingExercise
+	for rows.Next() {
+		var exercise model.TrainingExercise
+		err := rows.Scan(
+			&exercise.ID,
+			&exercise.Name,
+			&exercise.Description,
+			&exercise.Target,
+			&exercise.Category,
+			&exercise.Difficulty,
+		)
+		if err != nil {
+			return nil, err
+		}
+		exercises = append(exercises, exercise)
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	return exercises, nil
 }
