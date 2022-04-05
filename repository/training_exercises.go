@@ -20,34 +20,34 @@ type TrainingExerciseSearchOptions struct {
 	trainingDifficulty model.TrainingDifficulty
 }
 
-type TrainingExerciseSearchOption func(TrainingExerciseSearchOptions)
+type TrainingExerciseSearchOption func(*TrainingExerciseSearchOptions)
 
 func WithSearchLimit(searchLimit int) TrainingExerciseSearchOption {
-	return func(options TrainingExerciseSearchOptions) {
+	return func(options *TrainingExerciseSearchOptions) {
 		options.searchLimit = searchLimit
 	}
 }
 
 func WithSearchKeyword(searchKeyword []string) TrainingExerciseSearchOption {
-	return func(options TrainingExerciseSearchOptions) {
+	return func(options *TrainingExerciseSearchOptions) {
 		options.searchKeyword = searchKeyword
 	}
 }
 
 func WithTargetMuscle(targetMuscle model.TargetMuscle) TrainingExerciseSearchOption {
-	return func(options TrainingExerciseSearchOptions) {
+	return func(options *TrainingExerciseSearchOptions) {
 		options.targetMuscle = targetMuscle
 	}
 }
 
 func WithTrainingCategory(trainingCategory model.TrainingCategory) TrainingExerciseSearchOption {
-	return func(options TrainingExerciseSearchOptions) {
+	return func(options *TrainingExerciseSearchOptions) {
 		options.trainingCategory = trainingCategory
 	}
 }
 
 func WithTrainingDifficulty(trainingDifficulty model.TrainingDifficulty) TrainingExerciseSearchOption {
-	return func(options TrainingExerciseSearchOptions) {
+	return func(options *TrainingExerciseSearchOptions) {
 		options.trainingDifficulty = trainingDifficulty
 	}
 }
@@ -163,16 +163,29 @@ func (repository TrainingExerciseRepository) Search(options ...TrainingExerciseS
 		trainingDifficulty: "",
 	}
 	for _, fn := range options {
-		fn(search_options)
+		fn(&search_options)
 	}
 
 	base_query := "SELECT * FROM training_exercises WHERE 1=1"
-	if reflect.DeepEqual(search_options.searchKeyword, []string{""}) {
+	if !reflect.DeepEqual(search_options.searchKeyword, []string{""}) {
 		for _, keyword := range search_options.searchKeyword {
-			base_query += fmt.Sprintf("AND (name LIKE '%%%s%%' or description LIKE '%%%s%%')", keyword, keyword)
+			base_query += fmt.Sprintf(" AND (name LIKE '%%%s%%' or description LIKE '%%%s%%')", keyword, keyword)
 		}
 	}
-	base_query += fmt.Sprintf("LIMIT %d", search_options.searchLimit)
+
+	if len(search_options.targetMuscle) > 0 {
+		base_query += fmt.Sprintf(" AND target = '%s'", search_options.targetMuscle)
+	}
+
+	if len(search_options.trainingCategory) > 0 {
+		base_query += fmt.Sprintf(" AND category = '%s'", search_options.trainingCategory)
+	}
+
+	if len(search_options.trainingDifficulty) > 0 {
+		base_query += fmt.Sprintf(" AND difficulty = '%s'", search_options.trainingDifficulty)
+	}
+	base_query += fmt.Sprintf(" LIMIT %d;", search_options.searchLimit)
+	fmt.Println(base_query)
 
 	rows, err := repository.Database.Query(base_query)
 	if err != nil {
