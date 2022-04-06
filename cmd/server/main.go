@@ -12,11 +12,17 @@ import (
 
 func main() {
 	r := gin.Default()
+	// Training Exercises
 	r.GET("/training_exercise/", readAllTrainingExercises)
 	r.GET("/training_exercise/:id", readTrainingExercises)
 	r.POST("/training_exercise/save", createTrainingExercise)
 	r.PUT("/training_exercise/edit", updateTrainingExercise)
 	r.DELETE("/training_exercise/delete/:id", deleteTrainingExercise)
+
+	// Training Sets
+
+	// Training Menus
+
 	r.Run()
 }
 
