@@ -15,15 +15,25 @@ func main() {
 	r := gin.Default()
 	// Training Exercises
 	r.GET("/training_exercise/", readAllTrainingExercises)
-	r.GET("/training_exercise/:id", readTrainingExercises)
+	r.GET("/training_exercise/:id", readTrainingExercise)
 	r.GET("/training_exercise/search", searchTrainingExercises)
 	r.POST("/training_exercise/save", createTrainingExercise)
 	r.PUT("/training_exercise/edit", updateTrainingExercise)
 	r.DELETE("/training_exercise/delete/:id", deleteTrainingExercise)
 
 	// Training Sets
+	r.GET("/training_set/", readAllTrainingSets)
+	r.GET("/training_set/:id", readTrainingSet)
+	r.POST("/training_set/save", createTrainingSet)
+	r.PUT("/training_set/edit", updateTrainingSet)
+	r.DELETE("/training_set/delete/:id", deleteTrainingSet)
 
 	// Training Menus
+	r.GET("/training_menu/", readAllTrainingMenus)
+	r.GET("/training_menu/:id", readTrainingMenu)
+	r.POST("/training_menu/save", createTrainingMenu)
+	r.PUT("/training_menu/edit", updateTrainingMenu)
+	r.DELETE("/training_menu/delete/:id", deleteTrainingMenu)
 
 	r.Run()
 }
@@ -41,7 +51,7 @@ func readAllTrainingExercises(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, exercises)
 }
 
-func readTrainingExercises(c *gin.Context) {
+func readTrainingExercise(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
 		log.Fatalf("failed to read id parameter from path: %v", err)
@@ -134,4 +144,44 @@ func deleteTrainingExercise(c *gin.Context) {
 		log.Fatalf("failed to delete data: %v", err)
 	}
 	c.String(http.StatusOK, "successfully delete training exercise.")
+}
+
+func readAllTrainingSets(c *gin.Context) {
+
+}
+
+func readTrainingSet(c *gin.Context) {
+
+}
+
+func createTrainingSet(c *gin.Context) {
+
+}
+
+func updateTrainingSet(c *gin.Context) {
+
+}
+
+func deleteTrainingSet(c *gin.Context) {
+
+}
+
+func readAllTrainingMenus(c *gin.Context) {
+
+}
+
+func readTrainingMenu(c *gin.Context) {
+
+}
+
+func createTrainingMenu(c *gin.Context) {
+
+}
+
+func updateTrainingMenu(c *gin.Context) {
+
+}
+
+func deleteTrainingMenu(c *gin.Context) {
+
 }
