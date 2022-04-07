@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/kinniku-manager/model"
@@ -15,6 +16,7 @@ func main() {
 	// Training Exercises
 	r.GET("/training_exercise/", readAllTrainingExercises)
 	r.GET("/training_exercise/:id", readTrainingExercises)
+	r.GET("/training_exercise/search", searchTrainingExercises)
 	r.POST("/training_exercise/save", createTrainingExercise)
 	r.PUT("/training_exercise/edit", updateTrainingExercise)
 	r.DELETE("/training_exercise/delete/:id", deleteTrainingExercise)
@@ -50,6 +52,34 @@ func readTrainingExercises(c *gin.Context) {
 	}
 	repository := &repository.TrainingExerciseRepository{Database: db}
 	exercises, err := repository.Read(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.IndentedJSON(http.StatusOK, exercises)
+}
+
+func searchTrainingExercises(c *gin.Context) {
+	searchLimit, err := strconv.Atoi(c.Query("id"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	searchKeyword := strings.Split(c.Query("keyword"), " ")
+	targetMuscle := model.TargetMuscle(c.Query("target"))
+	trainingCategory := model.TrainingCategory(c.Query("category"))
+	trainingDifficulty := model.TrainingDifficulty(c.Query("difficulty"))
+
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	repo := &repository.TrainingExerciseRepository{Database: db}
+	exercises, err := repo.Search(
+		repository.WithSearchLimit(searchLimit),
+		repository.WithSearchKeyword(searchKeyword),
+		repository.WithTargetMuscle(targetMuscle),
+		repository.WithTrainingCategory(trainingCategory),
+		repository.WithTrainingDifficulty(trainingDifficulty),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
