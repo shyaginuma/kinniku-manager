@@ -227,21 +227,81 @@ func deleteTrainingSet(c *gin.Context) {
 }
 
 func readAllTrainingMenus(c *gin.Context) {
-
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	repository := &repository.TrainingMenuRepository{Database: db}
+	menus, err := repository.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.IndentedJSON(http.StatusOK, menus)
 }
 
 func readTrainingMenu(c *gin.Context) {
-
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		log.Fatalf("failed to read id parameter from path: %v", err)
+	}
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	repository := &repository.TrainingMenuRepository{Database: db}
+	menu, err := repository.Read(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.IndentedJSON(http.StatusOK, menu)
 }
 
 func createTrainingMenu(c *gin.Context) {
+	var newTrainingMenu model.TrainingMenu
+	if err := c.BindJSON(&newTrainingMenu); err != nil {
+		log.Fatalf("failed to bind json: %v", err)
+	}
 
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatalf("failed to establish connection with db: %v", err)
+	}
+	repository := &repository.TrainingMenuRepository{Database: db}
+	if err := repository.Create(newTrainingMenu); err != nil {
+		log.Fatalf("failed to insert record into db: %v", err)
+	}
+	c.IndentedJSON(http.StatusCreated, newTrainingMenu)
 }
 
 func updateTrainingMenu(c *gin.Context) {
+	var updatedTrainingMenu model.TrainingMenu
+	if err := c.BindJSON(&updatedTrainingMenu); err != nil {
+		log.Fatalf("failed to bind json: %v", err)
+	}
 
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatalf("failed to establish connection with db: %v", err)
+	}
+	repository := &repository.TrainingMenuRepository{Database: db}
+	if err := repository.Update(updatedTrainingMenu); err != nil {
+		log.Fatalf("failed to update data: %v", err)
+	}
+	c.IndentedJSON(http.StatusCreated, updatedTrainingMenu)
 }
 
 func deleteTrainingMenu(c *gin.Context) {
-
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		log.Fatalf("failed to read id parameter from path: %v", err)
+	}
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatalf("failed to establish connection with db: %v", err)
+	}
+	repository := &repository.TrainingMenuRepository{Database: db}
+	if err := repository.Delete(id); err != nil {
+		log.Fatalf("failed to delete data: %v", err)
+	}
+	c.String(http.StatusOK, "successfully delete training menu.")
 }
