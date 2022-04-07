@@ -147,23 +147,83 @@ func deleteTrainingExercise(c *gin.Context) {
 }
 
 func readAllTrainingSets(c *gin.Context) {
-
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	repository := &repository.TrainingSetRepository{Database: db}
+	sets, err := repository.ReadAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.IndentedJSON(http.StatusOK, sets)
 }
 
 func readTrainingSet(c *gin.Context) {
-
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		log.Fatalf("failed to read id parameter from path: %v", err)
+	}
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
+	repository := &repository.TrainingSetRepository{Database: db}
+	set, err := repository.Read(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.IndentedJSON(http.StatusOK, set)
 }
 
 func createTrainingSet(c *gin.Context) {
+	var newTrainingSet model.TrainingSet
+	if err := c.BindJSON(&newTrainingSet); err != nil {
+		log.Fatalf("failed to bind json: %v", err)
+	}
 
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatalf("failed to establish connection with db: %v", err)
+	}
+	repository := &repository.TrainingSetRepository{Database: db}
+	if err := repository.Create(newTrainingSet); err != nil {
+		log.Fatalf("failed to insert record into db: %v", err)
+	}
+	c.IndentedJSON(http.StatusCreated, newTrainingSet)
 }
 
 func updateTrainingSet(c *gin.Context) {
+	var updatedTrainingSet model.TrainingSet
+	if err := c.BindJSON(&updatedTrainingSet); err != nil {
+		log.Fatalf("failed to bind json: %v", err)
+	}
 
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatalf("failed to establish connection with db: %v", err)
+	}
+	repository := &repository.TrainingSetRepository{Database: db}
+	if err := repository.Update(updatedTrainingSet); err != nil {
+		log.Fatalf("failed to update data: %v", err)
+	}
+	c.IndentedJSON(http.StatusCreated, updatedTrainingSet)
 }
 
 func deleteTrainingSet(c *gin.Context) {
-
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		log.Fatalf("failed to read id parameter from path: %v", err)
+	}
+	db, err := repository.NewDBConnection()
+	if err != nil {
+		log.Fatalf("failed to establish connection with db: %v", err)
+	}
+	repository := &repository.TrainingSetRepository{Database: db}
+	if err := repository.Delete(id); err != nil {
+		log.Fatalf("failed to delete data: %v", err)
+	}
+	c.String(http.StatusOK, "successfully delete training set.")
 }
 
 func readAllTrainingMenus(c *gin.Context) {
